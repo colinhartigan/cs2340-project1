@@ -10,16 +10,25 @@ a creative title
 <!--prettier-ignore-->
 {% block scripts %}
 <script src="{% static 'index.js' %}"></script>
+<script src="{% static 'autocomplete.js' %}"></script>
 {% endblock %}
 
 <!--prettier-ignore-->
 {% block content %}
 <div class="min-vw-100 min-vh-100 d-flex flex-column align-items-center justify-content-start">
     <header
-        class="d-flex flex-row w-100 align-items-center justify-content-between m-3 px-4 py-3 z-3 bg-dark-subtle bg-gradient shadow rounded-pill"
+        class="position-relative d-flex flex-row w-100 align-items-center justify-content-between m-3 px-4 py-3 z-3 bg-dark-subtle bg-gradient shadow rounded-pill"
         style="max-width: 1080px"
     >
-        <p class="text-center m-0 h3">Atlanta Food Finder</p>
+        <p class="text-center m-0 h3">ATL Food Finder</p>
+
+        <div class="position-absolute w-25 h-auto" style="left: 50%; transform: translate(-50%, 0%)">
+            <input id="search-input" type="text" class="form-control" placeholder="Search for a restaurant" />
+            <div
+                id="search-results"
+                class="position-absolute w-100 d-flex flex-column justify-content-start align-items-center bg-dark"
+            ></div>
+        </div>
 
         <div class="d-flex flex-row align-items-center justify-content-center">
             {% comment %} <input type="text" class="form-control" placeholder="Search for a restaurant" />

@@ -3,13 +3,13 @@ async function initMap() {
     const { Map } = await google.maps.importLibrary("maps");
     const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
     const map = new Map(document.getElementById("map"), {
-        center: { lat: 37.4239163, lng: -122.0947209 },
+        center: { lat: 33.7488, lng: -84.3877 },
         zoom: 14,
         mapId: "4504f8b37365c3d0",
     });
     const marker = new AdvancedMarkerElement({
         map,
-        position: { lat: 37.4239163, lng: -122.0947209 },
+        position: { lat: 33.7488, lng: -84.3877 },
     });
 }
 
