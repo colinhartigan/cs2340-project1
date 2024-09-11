@@ -10,47 +10,66 @@ a creative title
 <!--prettier-ignore-->
 {% block scripts %}
 <script src="{% static 'index.js' %}"></script>
-<script src="{% static 'autocomplete.js' %}"></script>
 {% endblock %}
 
 <!--prettier-ignore-->
 {% block content %}
-<div class="min-vw-100 min-vh-100 d-flex flex-column align-items-center justify-content-start">
+
+<div
+    class="min-vw-100 h-100 d-flex flex-row bg-white align-items-stretch justify-content-start"
+    style="max-height: 100%"
+>
+    <div
+        class="d-flex flex-column w-100 gap-3 align-items-start justify-content-start bg-dark-subtle p-3 m-2 rounded-3"
+        style="max-width: 400px"
+    >
+        <div class="d-flex flex-row w-100 align-items-center justify-content-between">
+            <p class="text-center m-0 h3">ATL Food Finder</p>
+            {% comment %}
+            <button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                Hello, name
+            </button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="#">Account</a></li>
+                <li><a class="dropdown-item text-danger-emphasis" href="#">Log out</a></li>
+            </ul>
+            {% endcomment %}
+            <a href="{% url 'login' %}" class="btn">Log in</a>
+        </div>
+
+        <div class="w-100 h-auto">
+            <input id="search-input" type="text" class="form-control" placeholder="Search for food" />
+        </div>
+
+        <div id="restaurant-list" class="w-100 list-group h-100 overflow-auto" style="max-height: 100%">
+            <template id="restaurant-template">
+                <a href="#" id="restaurant-root" class="list-group-item list-group-item-action">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 id="restaurant-name" class="mb-1">Restaurant name</h5>
+                        <small id="restaurant-rating">3.4/5</small>
+                    </div>
+                    <p class="mb-1" id="restaurant-cuisine">American cuisine</p>
+                    <small class="hstack gap-2">
+                        {% comment %} <span class="badge" id="restaurant-status">open</span> {% endcomment %}
+                        <small id="restaurant-hours">10:00 AM - 10:00 PM</small>
+                    </small>
+                </a>
+            </template>
+        </div>
+    </div>
+
+    {%comment%}
     <header
-        class="position-relative d-flex flex-row w-100 align-items-center justify-content-between m-3 px-4 py-3 z-3 bg-dark-subtle bg-gradient shadow rounded-pill"
+        class="position-relative d-flex flex-row w-100 align-items-center justify-content-between m-3 px-4 py-3 z-3 shadow rounded-pill"
         style="max-width: 1080px"
     >
-        <p class="text-center m-0 h3">ATL Food Finder</p>
-
-        <div class="position-absolute w-25 h-auto" style="left: 50%; transform: translate(-50%, 0%)">
-            <input id="search-input" type="text" class="form-control" placeholder="Search for a restaurant" />
-            <div
-                id="search-results"
-                class="position-absolute w-100 d-flex flex-column justify-content-start align-items-center bg-dark"
-            ></div>
-        </div>
-
         <div class="d-flex flex-row align-items-center justify-content-center">
             {% comment %} <input type="text" class="form-control" placeholder="Search for a restaurant" />
-            {% endcomment %}
-            <div class="btn-group" role="group">
-                {% comment %}
-                <button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                    Hello, name
-                </button>
-                <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="#">Account</a></li>
-                    <li><a class="dropdown-item text-danger-emphasis" href="#">Log out</a></li>
-                </ul>
-                {% endcomment %}
-                <a href="{% url 'login' %}" class="btn">Log in</a>
-            </div>
         </div>
     </header>
+    {%endcomment%}
 
-    <div
-        id="map"
-        class="d-flex w-100 h-100 position-absolute flex-column align-items-center justify-content-center"
-    ></div>
+    <div id="map" class="m-2 d-flex w-100 flex-column align-items-center justify-content-center rounded-3"></div>
 </div>
+
 {% endblock %}
