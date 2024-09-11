@@ -5,16 +5,19 @@
 {% block content %}
 <div class="min-vw-100 min-vh-100 d-flex flex-column align-items-center justify-content-center">
     <div class="card w-100" style="max-width: 500px">
-        <div class="card-body">
-            <div class="d-flex flex-column justify-content-start align-items-start mb-4">
-                <h4 class="card-title">Sign in</h4>
-                <p class="card-subtitle">or create an account</p>
-            </div>
-            <form class="d-flex flex-column justify-content-start align-items-center gap-2">
-                <input
+        <form method="post" class="d-flex flex-column justify-content-start align-items-center gap-2">
+            <div class="card-body">
+                <div class="d-flex flex-column justify-content-start align-items-start mb-4">
+                    <h4 class="card-title">Sign in</h4>
+                    <p class="card-subtitle">or create an account</p>
+                </div>
+                <div class="d-flex flex-column justify-content-start align-items-start mb-4">
+                    {% csrf_token %}
+               <input
                     type="text"
                     class="form-control"
                     id="email-input"
+                    name="email-input"
                     aria-describedby="emailHelp"
                     placeholder="Email"
                 />
@@ -22,16 +25,25 @@
                     type="password"
                     class="form-control"
                     id="password-input"
+                    name="password-input"
                     aria-describedby="passwordHelp"
                     placeholder="Password"
                 />
-                <a href="#" class="text-primary-emphasis">I forgot my password</a>
-            </form>
-        </div>
-        <div class="card-footer d-flex flex-row justify-content-end align-items-center gap-2">
-            <button class="btn btn-primary">Register</button>
-            <button class="btn btn-primary">Sign in</button>
-        </div>
+                {% if user_taken %}
+                    <p>Username already exists</p>
+                {% else %}
+                {% if submitted %}
+                    <p>Invalid Username/password</p>
+                {% endif %}
+                {% endif %}
+                    <a href="#" class="text-primary-emphasis">I forgot my password</a>
+                </div>
+            </div>
+            <div class="card-footer d-flex flex-row justify-content-end align-items-center gap-2">
+                <button type="submit" name='action' value='register' class="btn btn-primary">Register</button>
+                <button type="submit" name='action' value='sign-in' class="btn btn-primary">Sign in</button>
+            </div>
+        </form>
     </div>
 </div>
 {% endblock %}
