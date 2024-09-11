@@ -14,38 +14,43 @@ a creative title
 
 <!--prettier-ignore-->
 {% block content %}
-<div class="min-vw-100 min-vh-100 d-flex flex-column align-items-center justify-content-start">
-    <header
-        class="position-relative d-flex flex-row w-100 align-items-center justify-content-between m-3 px-4 py-3 z-3 bg-dark-subtle bg-gradient shadow rounded-pill"
-        style="max-width: 1080px"
-    >
-        <p class="text-center m-0 h3">ATL Food Finder</p>
 
-        <div class="position-absolute h-auto" style="width: 30%; left: 50%; transform: translate(-50%, 0%)">
+<div class="min-vw-100 min-vh-100 d-flex flex-row bg-white align-items-stretch justify-content-start">
+    <div
+        class="d-flex flex-column w-100 gap-3 align-items-start justify-content-start bg-dark-subtle p-3 m-2 rounded-3"
+        style="max-width: 400px"
+    >
+        <div class="d-flex flex-row w-100 align-items-center justify-content-between">
+            <p class="text-center m-0 h3">ATL Food Finder</p>
+            {% comment %}
+            <button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                Hello, name
+            </button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="#">Account</a></li>
+                <li><a class="dropdown-item text-danger-emphasis" href="#">Log out</a></li>
+            </ul>
+            {% endcomment %}
+            <a href="{% url 'login' %}" class="btn">Log in</a>
+        </div>
+
+        <div class="w-100 h-auto">
             <input id="search-input" type="text" class="form-control" placeholder="Search for food" />
         </div>
+    </div>
 
+    {%comment%}
+    <header
+        class="position-relative d-flex flex-row w-100 align-items-center justify-content-between m-3 px-4 py-3 z-3 shadow rounded-pill"
+        style="max-width: 1080px"
+    >
         <div class="d-flex flex-row align-items-center justify-content-center">
             {% comment %} <input type="text" class="form-control" placeholder="Search for a restaurant" />
-            {% endcomment %}
-            <div class="btn-group" role="group">
-                {% comment %}
-                <button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                    Hello, name
-                </button>
-                <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="#">Account</a></li>
-                    <li><a class="dropdown-item text-danger-emphasis" href="#">Log out</a></li>
-                </ul>
-                {% endcomment %}
-                <a href="{% url 'login' %}" class="btn">Log in</a>
-            </div>
         </div>
     </header>
+    {%endcomment%}
 
-    <div
-        id="map"
-        class="d-flex w-100 h-100 position-absolute flex-column align-items-center justify-content-center"
-    ></div>
+    <div id="map" class="m-2 d-flex w-100 flex-column align-items-center justify-content-center rounded-3"></div>
 </div>
+
 {% endblock %}
