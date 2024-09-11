@@ -23,25 +23,25 @@ def site_login(request):
         password = request.POST.get("password-input")
         
         action = request.POST.get('action')
-            
-        if action == 'sign-in':
-            user = authenticate(request, username=username, password=password)
-            if user is not None:
-                login(request, user)
-                return redirect("/atlfoodfinder")
-        elif action == 'register':
-            Usermodel = get_user_model()
-            users = Usermodel.objects.all()
-            for one_user in users:
-                if one_user.email == username:
-                    user_taken = True
-            if not user_taken:
-                newuser = User.objects.create_user(username, username, password)
-                newuser.save()
-                
+        if username is not None and password is not None:
+            if action == 'sign-in':
                 user = authenticate(request, username=username, password=password)
                 if user is not None:
                     login(request, user)
                     return redirect("/atlfoodfinder")
+            elif action == 'register':
+                Usermodel = get_user_model()
+                users = Usermodel.objects.all()
+                for one_user in users:
+                    if one_user.email == username:
+                        user_taken = True
+                if not user_taken:
+                    newuser = User.objects.create_user(username, username, password)
+                    newuser.save()
+                    
+                    user = authenticate(request, username=username, password=password)
+                    if user is not None:
+                        login(request, user)
+                        return redirect("/atlfoodfinder")
         
     return render(request, "auth.html", {"submitted": submitted, "user_taken": user_taken})
