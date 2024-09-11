@@ -23,11 +23,15 @@
             document.getElementById("login-btn").disabled = true;
         }
     }
+
+    function submitForm() {
+        document.getElementById('login').submit()
+    }
 </script>
 {% endblock %} {% block content %}
 <div class="min-vw-100 min-vh-100 d-flex flex-column align-items-center justify-content-center">
     <div class="card w-100 d-flex flex-column justify-content-start align-items-center gap-2" style="max-width: 500px">
-        <form method="post" class="m-0" style="min-width: 100%; min-height: 100">
+        <form method="post" id="login" class="m-0" style="min-width: 100%; min-height: 100">
             <div class="card-body">
                 <div class="d-flex flex-column justify-content-start align-items-start mb-4">
                     <h4 class="card-title">Sign in</h4>
@@ -64,7 +68,7 @@
                 </div>
             </div>
             <div class="card-footer d-flex flex-row justify-content-end align-items-center gap-2">
-                <button id="register-btn" type="submit" name="action" value="register" class="btn btn-primary">
+                <button id="register-btn" type="button" name="action" value="register" onclick="submitForm()" class="btn btn-primary">
                     Register
                 </button>
                 <button id="login-btn" type="submit" name="action" value="sign-in" class="btn btn-primary">

@@ -27,12 +27,13 @@ def site_login(request):
         
         action = request.POST.get('action')
         if username is not None and password is not None:
+            print(request.POST)
             if action == 'sign-in':
                 user = authenticate(request, username=username, password=password)
                 if user is not None:
                     login(request, user)
                     return redirect("/atlfoodfinder")
-            elif action == 'register':
+            else:
                 Usermodel = get_user_model()
                 users = Usermodel.objects.all()
                 for one_user in users:
