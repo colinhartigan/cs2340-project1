@@ -30,7 +30,7 @@ a creative title
                 {{ user.username }}
             </button>
             <ul class="dropdown-menu">
-                <li><a class="dropdown-item text-danger-emphasis" href="#">Log out</a></li>
+                <li><a href="{% url 'logout' %}" class="dropdown-item text-danger-emphasis" href="#">Log out</a></li>
             </ul>
             {% else %}
             <a href="{% url 'login' %}" class="btn">Log in</a>
