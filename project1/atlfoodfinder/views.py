@@ -9,7 +9,7 @@ from django.contrib.auth import authenticate, login
 # Create your views here.
 def index(request):
     if request.user.is_authenticated:
-        return render(request, "index.html", {})
+        return render(request, "index.html", {"user": request.user})
     else:
         return redirect(f"{settings.LOGIN_URL}?next={request.path}")
 
