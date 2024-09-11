@@ -5,10 +5,16 @@
 <!--prettier-ignore-->
 {% block scripts %}
 <script type="text/javascript">
+    function validateEmail(email) {
+        let re = /\S+@\S+\.\S+/;
+        return re.test(email);
+    }
+
     function stoppedTyping() {
         if (
             document.getElementById("email-input").value.length > 0 &&
-            document.getElementById("password-input").value.length > 0
+            document.getElementById("password-input").value.length > 0 &&
+            validateEmail(document.getElementById("email-input").value)
         ) {
             document.getElementById("register-btn").disabled = false;
             document.getElementById("login-btn").disabled = false;
