@@ -55,8 +55,7 @@ async function makeAcRequest(input) {
         a.innerText = placePrediction.text.toString();
 
         // Create a new list element.
-        const li = document.createElement("li");
-        li.setAttribute("class", "list-group-item list-group-item-action");
+        const li = document.createElement("div", { class: "list-group-item list-group-item-action" });
 
         li.appendChild(a);
         results.appendChild(li);
@@ -69,7 +68,7 @@ async function onPlaceSelected(place) {
         fields: ["displayName", "formattedAddress"],
     });
 
-    let placeText = document.createTextNode(place.displayName);
+    let placeText = document.createTextNode(place.displayName + ": " + place.formattedAddress);
 
     results.replaceChildren(placeText);
     input.value = "";
