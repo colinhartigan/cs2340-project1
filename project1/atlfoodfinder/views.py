@@ -4,7 +4,7 @@ from django.conf import settings
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 
 # Create your views here.
 def index(request):
@@ -13,6 +13,9 @@ def index(request):
     else:
         return redirect(f"{settings.LOGIN_URL}?next={request.path}")
 
+def logout_view(request):
+    logout(request)
+    return redirect(f"{settings.LOGIN_URL}?next=/atlfoodfinder/")
 
 def site_login(request):
     submitted = False
@@ -45,3 +48,6 @@ def site_login(request):
                         return redirect("/atlfoodfinder")
         
     return render(request, "auth.html", {"submitted": submitted, "user_taken": user_taken})
+
+def rdetails(request):
+    return render(request, "detail.html", {})
