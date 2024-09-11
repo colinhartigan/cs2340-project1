@@ -1,4 +1,5 @@
 const CENTER = { lat: 33.7488, lng: -84.3877 };
+const BOUNDS = {};
 
 let map;
 
@@ -43,6 +44,7 @@ async function findPlaces() {
         // Loop through and get all the results.
         places.forEach((place) => {
             place = place.toJSON();
+            console.log(place);
             markers.push(
                 new AdvancedMarkerElement({
                     map,
