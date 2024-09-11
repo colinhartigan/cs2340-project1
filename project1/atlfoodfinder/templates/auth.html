@@ -2,46 +2,68 @@
 {% extends "master.html" %} 
 {% load static %}
 
-{% block content %}
+<!--prettier-ignore-->
+{% block scripts %}
+<script type="text/javascript">
+    function stoppedTyping() {
+        if (
+            document.getElementById("email-input").value.length > 0 &&
+            document.getElementById("password-input").value.length > 0
+        ) {
+            document.getElementById("register-btn").disabled = false;
+            document.getElementById("login-btn").disabled = false;
+        } else {
+            document.getElementById("register-btn").disabled = true;
+            document.getElementById("login-btn").disabled = true;
+        }
+    }
+</script>
+{% endblock %} {% block content %}
 <div class="min-vw-100 min-vh-100 d-flex flex-column align-items-center justify-content-center">
-    <div class="card w-100" style="max-width: 500px">
-        <form method="post" class="d-flex flex-column justify-content-start align-items-center gap-2">
+    <div class="card w-100 d-flex flex-column justify-content-start align-items-center gap-2" style="max-width: 500px">
+        <form method="post" class="m-0" style="min-width: 100%; min-height: 100">
             <div class="card-body">
                 <div class="d-flex flex-column justify-content-start align-items-start mb-4">
                     <h4 class="card-title">Sign in</h4>
                     <p class="card-subtitle">or create an account</p>
                 </div>
-                <div class="d-flex flex-column justify-content-start align-items-start mb-4">
-                    {% csrf_token %}
-               <input
-                    type="text"
-                    class="form-control"
-                    id="email-input"
-                    name="email-input"
-                    aria-describedby="emailHelp"
-                    placeholder="Email"
-                />
-                <input
-                    type="password"
-                    class="form-control"
-                    id="password-input"
-                    name="password-input"
-                    aria-describedby="passwordHelp"
-                    placeholder="Password"
-                />
+
                 {% if user_taken %}
-                    <p>Username already exists</p>
-                {% else %}
-                {% if submitted %}
-                    <p>Invalid Username/password</p>
-                {% endif %}
-                {% endif %}
+                <div class="alert alert-danger d-flex align-items-center" role="alert">Email already in use!</div>
+                {% else %} {% if submitted %}
+                <div class="alert alert-danger d-flex align-items-center" role="alert">Invalid username/password</div>
+                {% endif %} {% endif %}
+
+                <div class="d-flex flex-column justify-content-start align-items-center gap-2">
+                    {% csrf_token %}
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="email-input"
+                        name="email-input"
+                        aria-describedby="emailHelp"
+                        placeholder="Email"
+                        onkeyup="stoppedTyping()"
+                    />
+                    <input
+                        type="password"
+                        class="form-control"
+                        id="password-input"
+                        name="password-input"
+                        aria-describedby="passwordHelp"
+                        placeholder="Password"
+                        onkeyup="stoppedTyping()"
+                    />
                     <a href="#" class="text-primary-emphasis">I forgot my password</a>
                 </div>
             </div>
             <div class="card-footer d-flex flex-row justify-content-end align-items-center gap-2">
-                <button type="submit" name='action' value='register' class="btn btn-primary">Register</button>
-                <button type="submit" name='action' value='sign-in' class="btn btn-primary">Sign in</button>
+                <button id="register-btn" type="submit" name="action" value="register" class="btn btn-primary">
+                    Register
+                </button>
+                <button id="login-btn" type="submit" name="action" value="sign-in" class="btn btn-primary">
+                    Sign in
+                </button>
             </div>
         </form>
     </div>
