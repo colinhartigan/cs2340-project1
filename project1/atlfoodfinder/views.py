@@ -7,10 +7,9 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.views import generic
 
+
 # Create your views here.
 
-class PlaceView(generic.ListView):
-    template_name = "detail.html"
 
 def index(request):
     if request.user.is_authenticated:
@@ -60,8 +59,9 @@ def site_login(request):
                         return redirect("/atlfoodfinder")
     return render(request, "auth.html", {"submitted": submitted, "user_taken": user_taken})
 
-def rdetails(request):
-    return render(request, "detail.html", {})
+def rdetails(request, placeid):
+    print(f"Displaying page with place {placeid}")
+    return render(request, "detail.html", {"placeid": placeid})
 
 # loops through saved users to see if a username is already taken
 def check_user_exists(username):
