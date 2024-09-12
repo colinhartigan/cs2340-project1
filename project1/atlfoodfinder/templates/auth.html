@@ -25,7 +25,7 @@
     }
 
     function submitForm() {
-        document.getElementById('login').submit()
+        document.getElementById("login").submit();
     }
 </script>
 {% endblock %} {% block content %}
@@ -41,7 +41,9 @@
                 {% if user_taken %}
                 <div class="alert alert-danger d-flex align-items-center" role="alert">Email already in use!</div>
                 {% else %} {% if submitted %}
-                <div class="alert alert-danger d-flex align-items-center" role="alert">Invalid username/password</div>
+                <div class="alert alert-danger d-flex align-items-center" role="alert">
+                    Invalid username/password. Have you registered?
+                </div>
                 {% endif %} {% endif %}
 
                 <div class="d-flex flex-column justify-content-start align-items-center gap-2">
@@ -68,7 +70,14 @@
                 </div>
             </div>
             <div class="card-footer d-flex flex-row justify-content-end align-items-center gap-2">
-                <button id="register-btn" type="button" name="action" value="register" onclick="submitForm()" class="btn btn-primary">
+                <button
+                    id="register-btn"
+                    type="button"
+                    name="action"
+                    value="register"
+                    onclick="submitForm()"
+                    class="btn btn-primary"
+                >
                     Register
                 </button>
                 <button id="login-btn" type="submit" name="action" value="sign-in" class="btn btn-primary">
