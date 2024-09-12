@@ -53,7 +53,6 @@ def site_login(request):
                     if user is not None:
                         login(request, user)
                         return redirect("/atlfoodfinder")
-        
     return render(request, "auth.html", {"submitted": submitted, "user_taken": user_taken})
 
 def rdetails(request):
