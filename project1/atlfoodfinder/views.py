@@ -5,8 +5,13 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
+from django.views import generic
 
 # Create your views here.
+
+class PlaceView(generic.ListView):
+    template_name = "detail.html"
+
 def index(request):
     if request.user.is_authenticated:
         return render(request, "index.html", {"user": request.user})
