@@ -43,11 +43,7 @@ def site_login(request):
             # while making it so that hitting enter was a sign in and not a registration
             else:
                 # makes sure that the user registering isn't a duplicate
-                Usermodel = get_user_model()
-                users = Usermodel.objects.all()
-                for one_user in users:
-                    if one_user.email == username:
-                        user_taken = True
+                user_taken = check_user_exists(username)
                 if not user_taken:
                 # if user is not a duplicate, create a new user, log in, and redirect to the main page
                     newuser = User.objects.create_user(username, username, password)
@@ -62,3 +58,12 @@ def site_login(request):
 
 def rdetails(request):
     return render(request, "detail.html", {})
+
+
+def check_user_exists(username):
+    Usermodel = get_user_model()
+    users = Usermodel.objects.all()
+    for one_user in users:
+        if one_user.email == username:
+            return True
+    return False
