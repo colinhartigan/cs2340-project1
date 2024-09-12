@@ -15,10 +15,11 @@ async function initMap() {
 
 let markers = [];
 async function findPlaces(query) {
+    // import google maps api libraries
     const { Place } = await google.maps.importLibrary("places");
     const { AdvancedMarkerElement, PinElement } = await google.maps.importLibrary("marker");
 
-    // remove all markers
+    // remove all old markers
     markers.forEach((marker) => marker.setMap(null));
 
     // clear restaurant list except for the template
@@ -27,6 +28,10 @@ async function findPlaces(query) {
         restaurantList.removeChild(restaurantList.lastChild);
     }
 
+    // build the request:
+    //  - only get certain fields
+    //  - only get restaurants
+    //  - don't restrict to only open places
     const request = {
         textQuery: query,
         fields: [
@@ -53,11 +58,11 @@ async function findPlaces(query) {
         const { LatLngBounds } = await google.maps.importLibrary("core");
         const bounds = new LatLngBounds();
 
-        // Loop through and get all the results.
+        // for each place, create a marker and a list entry
         places.forEach((place, index) => {
             place = place.toJSON();
 
-            // add marker
+            // add marker with corresponding number
             const pin = new PinElement({
                 glyph: `${index + 1}`,
                 glyphColor: "white",
@@ -70,13 +75,13 @@ async function findPlaces(query) {
             });
             markers.push(marker);
 
-            // add to restaurant list
+            // add restaurant entry to restaurant list
             const restaurantList = document.getElementById("restaurant-list");
 
             // duplicate the template and set the fields
             const template = document.getElementById("restaurant-template");
 
-            // set clone's id to the place id
+            // set clone's fields to the place's data
             const clone = template.content.cloneNode(true);
             clone.getElementById("restaurant-root").id = place.id;
             clone.getElementById("restaurant-name").textContent = `${index + 1} - ${place.displayName}`;
@@ -97,9 +102,10 @@ async function findPlaces(query) {
                 clone.getElementById("restaurant-hours").textContent = "";
             }
 
-            clone.addEventListener("mouseover", () => {
-                highlightPlace(place.id, index);
-            });
+            // add event listeners to markers to highlight the corresponding list entry
+            // clone.addEventListener("mouseover", () => {
+            //     highlightPlace(place.id, index);
+            // });
 
             marker.addEventListener("mouseenter", () => {
                 highlightPlace(place.id, index);
@@ -108,10 +114,14 @@ async function findPlaces(query) {
                 unHighlightPlace(place.id, index);
             });
 
+            // add the clone to the restaurant list
             restaurantList.appendChild(clone);
 
+            // extend the bounds to include the place
             bounds.extend(place.location);
         });
+
+        // zoom to fit all the restaurants
         map.fitBounds(bounds);
     } else {
         console.log("No results");
@@ -158,4 +168,4 @@ window.addEventListener("DOMContentLoaded", (event) => {
     });
 });
 
-findPlaces("food");
+// findPlaces("food");
