@@ -59,7 +59,7 @@ def site_login(request):
 def rdetails(request):
     return render(request, "detail.html", {})
 
-
+# loops through saved users to see if a username is already taken
 def check_user_exists(username):
     Usermodel = get_user_model()
     users = Usermodel.objects.all()
