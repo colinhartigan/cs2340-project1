@@ -6,6 +6,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.views import generic
+from django.contrib.auth.hashers import make_password
 
 
 # Create your views here.
@@ -71,3 +72,34 @@ def check_user_exists(username):
         if one_user.email == username:
             return True
     return False
+
+def password_reset(request):
+    submitted = False
+    email_invalid = False
+    same_as_old_password = False
+
+    if request.method == 'POST':
+        submitted = True
+        email = request.POST.get("email-input")
+        new_password = request.POST.get("password-input")
+
+        # Check if the email exists in the User model
+        user = User.objects.filter(email=email).first()
+        if user:
+            # Check if the new password matches the old one
+            if user.check_password(new_password):
+                same_as_old_password = True
+            else:
+                # Set the new password and save the user
+                user.set_password(new_password)
+                user.save()
+                return redirect("/login")
+        else:
+            # If the email was never registered, show an error
+            email_invalid = True
+
+    return render(request, "password_reset.html", {
+        "submitted": submitted, 
+        "email_invalid": email_invalid, 
+        "same_as_old_password": same_as_old_password
+    })
