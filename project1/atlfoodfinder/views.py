@@ -73,6 +73,7 @@ def check_user_exists(username):
             return True
     return False
 
+#allows user to reset their password
 def password_reset(request):
     submitted = False
     email_invalid = False
@@ -83,7 +84,7 @@ def password_reset(request):
         email = request.POST.get("email-input")
         new_password = request.POST.get("password-input")
 
-        # Check if the email exists in the User model
+        # Checks if the email exists in the system
         user = User.objects.filter(email=email).first()
         if user:
             # Check if the new password matches the old one
