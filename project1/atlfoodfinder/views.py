@@ -62,8 +62,11 @@ def site_login(request):
     return render(request, "auth.html", {"submitted": submitted, "user_taken": user_taken})
 
 def rdetails(request, placeid):
-    print(f"Displaying page with place {placeid}")
-    return render(request, "detail.html", {"placeid": placeid})
+    if request.user.is_authenticated:
+        print(f"Displaying page with place {placeid}")
+        return render(request, "detail.html", {"placeid": placeid})
+    else:
+        return redirect(f"{settings.LOGIN_URL}?next={request.path}")
 
 # loops through saved users to see if a username is already taken
 def check_user_exists(username):
