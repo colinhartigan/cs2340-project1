@@ -15,6 +15,7 @@ from django.contrib.auth.hashers import make_password
 
 def index(request):
     if request.user.is_authenticated:
+        print(request.user.favorite_set.all())
         return render(request, "index.html", {"user": request.user})
     else:
         return redirect(f"{settings.LOGIN_URL}?next={request.path}")
@@ -25,6 +26,8 @@ def logout_view(request):
 
 def site_login(request):
     # variables that get passed to the html
+    if request.user.is_authenticated:
+        return redirect(f"/atlfoodfinder")
     submitted = False
     user_taken = False
     # it will only enter this if loop if the function is running on a form submit
@@ -52,7 +55,7 @@ def site_login(request):
                 user_taken = check_user_exists(username)
                 if not user_taken:
                 # if user is not a duplicate, create a new user, log in, and redirect to the main page
-                    newuser = Consumer.create_user(username, password)
+                    newuser = User.objects.create_user(username, password)
                     newuser.save()
                     
                     user = authenticate(request, username=username, password=password)
