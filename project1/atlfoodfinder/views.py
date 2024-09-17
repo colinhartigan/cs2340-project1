@@ -15,7 +15,6 @@ from django.contrib.auth.hashers import make_password
 
 def index(request):
     if request.user.is_authenticated:
-        print(request.user.favorite_set.all())
         return render(request, "index.html", {"user": request.user})
     else:
         return redirect(f"{settings.LOGIN_URL}?next={request.path}")
