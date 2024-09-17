@@ -4,9 +4,8 @@ from django.conf import settings
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
+from .models import Favorite
 from django.contrib.auth import authenticate, login, logout
-from django.views import generic
-from django.contrib.auth.hashers import make_password
 
 
 # Create your views here.
@@ -24,6 +23,8 @@ def logout_view(request):
 
 def site_login(request):
     # variables that get passed to the html
+    if request.user.is_authenticated:
+        return redirect(f"/atlfoodfinder")
     submitted = False
     user_taken = False
     # it will only enter this if loop if the function is running on a form submit
@@ -51,7 +52,7 @@ def site_login(request):
                 user_taken = check_user_exists(username)
                 if not user_taken:
                 # if user is not a duplicate, create a new user, log in, and redirect to the main page
-                    newuser = User.objects.create_user(username, username, password)
+                    newuser = User.objects.create_user(username, password)
                     newuser.save()
                     
                     user = authenticate(request, username=username, password=password)
@@ -104,3 +105,12 @@ def password_reset(request):
         "email_invalid": email_invalid, 
         "same_as_old_password": same_as_old_password
     })
+    
+def add_favorite(user : User, place_id):
+    user.favorite_set.create(placeid=place_id)
+    
+def clear_favorites(user):
+    user.favorite_set.all().delete()
+    
+def get_favorite_set(user):
+    return user.favorite_set.all()
