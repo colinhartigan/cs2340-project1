@@ -6,4 +6,6 @@ from django.contrib.auth.models import User
 class Favorite(models.Model):
     placeid = models.BigIntegerField(default=0)
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
+    def __str__(self):
+        return f"{self.placeid} {self.user}"
         
