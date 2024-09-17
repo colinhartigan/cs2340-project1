@@ -6,8 +6,6 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
 from .models import Favorite
 from django.contrib.auth import authenticate, login, logout
-from django.views import generic
-from django.contrib.auth.hashers import make_password
 
 
 # Create your views here.
