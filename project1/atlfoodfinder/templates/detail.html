@@ -1,0 +1,21 @@
+{% extends "master.html" %}
+{% load static %}
+
+{% block title %}
+Restaurant Details
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 id="restaurant-name">Restaurant Name</h1>
+    <p id="restaurant-address">Address: </p>
+    <div id="map" style="height: 400px;"></div> <!-- Map element -->
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'detail.js' %}"></script>
+{% endblock %}
+
+
+
