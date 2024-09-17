@@ -16,6 +16,8 @@
         {% endblock %}
     </head>
     <body data-bs-theme="dark">
-        {% block content %} {% endblock %}
+        <div class="position-relative" style="max-width: 100%; max-height: calc(100%-15px)">
+            {% block content %} {% endblock %}
+        </div>
     </body>
 </html>
