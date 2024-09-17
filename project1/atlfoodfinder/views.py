@@ -4,6 +4,7 @@ from django.conf import settings
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
+from .models import Favorite
 from django.contrib.auth import authenticate, login, logout
 from django.views import generic
 
@@ -50,7 +51,7 @@ def site_login(request):
                 user_taken = check_user_exists(username)
                 if not user_taken:
                 # if user is not a duplicate, create a new user, log in, and redirect to the main page
-                    newuser = User.objects.create_user(username, username, password)
+                    newuser = Consumer.create_user(username, password)
                     newuser.save()
                     
                     user = authenticate(request, username=username, password=password)
