@@ -105,3 +105,12 @@ def password_reset(request):
         "email_invalid": email_invalid, 
         "same_as_old_password": same_as_old_password
     })
+    
+def add_favorite(user : User, place_id):
+    user.favorite_set.create(placeid=place_id)
+    
+def clear_favorites(user):
+    user.favorite_set.all().delete()
+    
+def get_favorite_set(user):
+    return user.favorite_set.all()
