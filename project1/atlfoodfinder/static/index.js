@@ -43,9 +43,11 @@ async function initMap() {
 }
 
 let markers = [];
-async function findPlaces(query) {
+async function findPlaces(payload) {
     // import google maps api libraries
-    const { Place } = await google.maps.importLibrary("places");
+    const { Place, SearchNearbyRankPreference } = await google.maps.importLibrary("places");
+
+    const currentCenter = map.getCenter();
 
     // remove all old markers
     markers.forEach((marker) => marker.setMap(null));
@@ -61,13 +63,17 @@ async function findPlaces(query) {
     //  - only get restaurants
     //  - don't restrict to only open places
     const request = {
-        textQuery: query,
+        textQuery: payload.query,
         fields: FIELDS,
         includedType: "restaurant",
-        locationBias: CENTER_GT,
+        locationBias: {
+            center: currentCenter,
+            radius: payload.maxDistance,
+        },
+        rankPreference: SearchNearbyRankPreference.RELEVANCE,
         isOpenNow: false,
         language: "en-US",
-        minRating: 3.2,
+        minRating: parseFloat(payload.minRating),
         region: "us",
         useStrictTypeFiltering: false,
     };
@@ -180,7 +186,9 @@ async function unHighlightPlace(marker) {
 
     const restaurant = document.getElementById(marker.title.split(":")[0]);
     const index = parseInt(marker.title.split(":")[1]);
-    restaurant.classList.remove("active");
+    try {
+        restaurant.classList.remove("active");
+    } catch (e) {}
 
     // also unhighlight the marker
     marker.content = new PinElement({
@@ -193,11 +201,35 @@ async function unHighlightPlace(marker) {
 // starting stuff
 initMap();
 
+function initSearch() {
+    let dist = document.getElementById("dist-input").value;
+    let rating = document.getElementById("rating-input").value;
+    let query = document.getElementById("search-input").value;
+
+    if (query == "") {
+        query = "food";
+    }
+    if (dist == 0) {
+        dist = 1;
+    }
+    if (dist > 31) {
+        dist = 31;
+    }
+
+    const payload = {
+        query: query,
+        // convert dist from miles to meters
+        maxDistance: dist * 1609.34,
+        minRating: rating,
+    };
+    findPlaces(payload);
+}
+
 // listen for enter button on the search box then search
 window.addEventListener("DOMContentLoaded", (event) => {
     document.getElementById("search-input").addEventListener("keypress", (e) => {
         if (e.key === "Enter") {
-            findPlaces(document.getElementById("search-input").value);
+            initSearch();
         }
     });
 });
