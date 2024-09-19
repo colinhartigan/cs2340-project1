@@ -9,7 +9,13 @@ Restaurant Details
 <div class="container">
     <h1 id="restaurant-name">Restaurant Name</h1>
     <p id="restaurant-address">Address: </p>
-    <div id="map" style="height: 400px;"></div> <!-- Map element -->
+    <div id="map" style="height: 400px;"></div> 
+
+    <form id="favorite-form" method="POST" action="/add_favorite/">
+        {% csrf_token %}
+        <input type="hidden" name="restaurant_id" value="{{ restaurant.id }}">
+        <button type="submit" class="btn btn-primary">Add to Favorites</button>
+    </form>
 </div>
 {% endblock %}
 
