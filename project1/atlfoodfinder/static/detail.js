@@ -43,3 +43,13 @@ function getPlaceIdFromURL() {
     const params = new URLSearchParams(window.location.search);
     return params.get('placeId') || 'ChIJN5Nz71W3j4ARhx5bwpTQEGg';  // Default Place ID if none is provided
 }
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('favorite-form');
+    form.addEventListener('submit', function (event) {
+        event.preventDefault(); 
+
+        // Placeholder for the backend request
+        alert('Restaurant added to favorites!'); 
+
+    });
+});
