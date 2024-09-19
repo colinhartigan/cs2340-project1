@@ -43,7 +43,7 @@ a creative title
 
         <div id="restaurant-list" class="w-100 list-group h-100 overflow-auto" style="max-height: 100%">
             <template id="restaurant-template">
-                <a href="#" id="restaurant-root" class="list-group-item list-group-item-action">
+                <a href="#" id="restaurant-root" class="list-group-item list-group-item-action restaurant">
                     <div class="d-flex w-100 justify-content-between">
                         <h5 id="restaurant-name" class="mb-1">Restaurant name</h5>
                         <small id="restaurant-rating">3.4/5</small>
@@ -57,17 +57,6 @@ a creative title
             </template>
         </div>
     </div>
-
-    {%comment%}
-    <header
-        class="position-relative d-flex flex-row w-100 align-items-center justify-content-between m-3 px-4 py-3 z-3 shadow rounded-pill"
-        style="max-width: 1080px"
-    >
-        <div class="d-flex flex-row align-items-center justify-content-center">
-            {% comment %} <input type="text" class="form-control" placeholder="Search for a restaurant" />
-        </div>
-    </header>
-    {%endcomment%}
 
     <div id="map" class="m-2 d-flex w-100 flex-column align-items-center justify-content-center rounded-3"></div>
 </div>
