@@ -64,7 +64,21 @@ def site_login(request):
 def rdetails(request, placeid):
     if request.user.is_authenticated:
         print(f"Displaying page with place {placeid}")
-        return render(request, "detail.html", {"placeid": placeid})
+        is_favorite = False
+        for f in request.user.favorite_set.all():
+            if f.placeid == placeid:
+                is_favorite = True
+                
+
+        if request.method == 'POST':
+            if is_favorite:
+                is_favorite = False
+                delete_favorite(request.user, placeid)
+            else:
+                is_favorite = True
+                add_favorite(request.user, placeid)
+        
+        return render(request, "detail.html", {"placeid": placeid, "favorite": is_favorite})
     else:
         return redirect(f"{settings.LOGIN_URL}?next={request.path}")
 
@@ -117,3 +131,6 @@ def clear_favorites(user):
     
 def get_favorite_set(user):
     return user.favorite_set.all()
+
+def delete_favorite(user, placeid):
+    user.favorite_set.filter(placeid=placeid).delete()
