@@ -39,35 +39,69 @@ a creative title
 
         <ul class="nav nav-underline">
             <li class="nav-item">
-                <a class="nav-link" aria-current="page" href="#">Search</a>
+                <button
+                    class="nav-link active"
+                    data-bs-toggle="tab"
+                    data-bs-target="#search-tab"
+                    type="button"
+                    role="tab"
+                    aria-controls="search-tab"
+                    aria-selected="false"
+                >
+                    Search
+                </button>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Favorites</a>
+                <button
+                    class="nav-link"
+                    data-bs-toggle="tab"
+                    data-bs-target="#favorites-tab"
+                    type="button"
+                    role="tab"
+                    aria-controls="favorites-tab"
+                    aria-selected="false"
+                >
+                    Favorites
+                </button>
             </li>
         </ul>
 
-        <div class="w-100 h-auto">
-            <input id="search-input" type="text" class="form-control" placeholder="Search for food" />
-        </div>
+        <div
+            class="tab-content w-100 h-100 d-flex flex-column gap-3 justify-content-start align-items-center overflow-hidden"
+        >
+            <div
+                class="tab-pane fade show active w-100 h-100 d-flex flex-column gap-3 justify-content-start align-items-center overflow-hidden"
+                id="search-tab"
+            >
+                <div class="w-100 h-auto">
+                    <input id="search-input" type="text" class="form-control" placeholder="Search for food" />
+                </div>
 
-        <div id="restaurant-list" class="w-100 list-group h-100 overflow-auto" style="max-height: 100%">
-            <template id="restaurant-template">
-                <a href="#" id="restaurant-root" class="list-group-item list-group-item-action restaurant">
-                    <div class="d-flex w-100 justify-content-between">
-                        <h5 id="restaurant-name" class="mb-1">Restaurant name</h5>
-                        <small id="restaurant-rating">3.4/5</small>
-                    </div>
-                    <p class="mb-1" id="restaurant-cuisine">American cuisine</p>
-                    <small class="hstack gap-2">
-                        {% comment %} <span class="badge" id="restaurant-status">open</span> {% endcomment %}
-                        <small id="restaurant-hours">10:00 AM - 10:00 PM</small>
-                    </small>
-                </a>
-            </template>
+                <div id="restaurant-list" class="w-100 list-group h-auto overflow-auto" style="max-height: 100%">
+                    <template id="restaurant-template">
+                        <a href="#" id="restaurant-root" class="list-group-item list-group-item-action restaurant">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 id="restaurant-name" class="mb-1">Restaurant name</h5>
+                                <small id="restaurant-rating">3.4/5</small>
+                            </div>
+                            <p class="mb-1" id="restaurant-cuisine">American cuisine</p>
+                            <small class="hstack gap-2">
+                                {% comment %} <span class="badge" id="restaurant-status">open</span> {% endcomment %}
+                                <small id="restaurant-hours">10:00 AM - 10:00 PM</small>
+                            </small>
+                        </a>
+                    </template>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="favorites-tab">
+                <div class="w-100 h-auto">
+                    <p class="text-center">Favorites</p>
+                </div>
+            </div>
         </div>
     </div>
-
     <div id="map" class="m-2 d-flex w-100 flex-column align-items-center justify-content-center rounded-3"></div>
-</div>
 
-{% endblock %}
+    {% endblock %}
+</div>
