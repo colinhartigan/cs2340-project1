@@ -69,12 +69,64 @@ a creative title
         <div
             class="tab-content w-100 h-100 d-flex flex-column gap-3 justify-content-start align-items-center overflow-hidden"
         >
+            {% comment %} search {% endcomment %}
             <div
                 class="tab-pane fade show active w-100 h-100 d-flex flex-column gap-3 justify-content-start align-items-center overflow-hidden"
                 id="search-tab"
             >
-                <div class="w-100 h-auto">
-                    <input id="search-input" type="text" class="form-control" placeholder="Search for food" />
+                <div class="w-100 h-auto input-group">
+                    <input
+                        id="search-input"
+                        type="text"
+                        class="form-control"
+                        placeholder="Search for food"
+                        onfocusout="initSearch()"
+                    />
+                    <button
+                        class="btn btn-outline-secondary dropdown-toggle"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#filters-collapse"
+                        aria-expanded="true"
+                        aria-controls="filters-collapse"
+                    >
+                        Filters
+                    </button>
+                </div>
+
+                <div class="collapse vstack gap-2" id="filters-collapse">
+                    <div class="">
+                        <label for="basic-url" class="form-label">Search radius from view</label>
+                        <div class="input-group">
+                            <input
+                                type="number"
+                                class="form-control"
+                                id="dist-input"
+                                aria-describedby="mi-addon"
+                                min="1"
+                                max="50"
+                                default="5"
+                            />
+                            <span class="input-group-text" id="mi-addon">mi</span>
+                        </div>
+                    </div>
+
+                    <div class="">
+                        <label for="basic-url" class="form-label">Minimum rating</label>
+                        <select id="rating-input" class="form-select">
+                            <option value="1">1/5</option>
+                            <option value="2">2/5</option>
+                            <option value="3">3/5</option>
+                            <option value="4">4/5</option>
+                            <option value="4.5">4.5/5</option>
+                        </select>
+                    </div>
+
+                    <div class="">
+                        <button type="button" class="btn btn-primary w-100 mt-3" onclick="initSearch()">
+                            Apply filters
+                        </button>
+                    </div>
                 </div>
 
                 <div id="restaurant-list" class="w-100 list-group h-auto overflow-auto" style="max-height: 100%">
@@ -94,6 +146,7 @@ a creative title
                 </div>
             </div>
 
+            {% comment %} favorites {% endcomment %}
             <div class="tab-pane fade" id="favorites-tab">
                 <div class="w-100 h-auto">
                     <p class="text-center">Favorites</p>
@@ -102,6 +155,5 @@ a creative title
         </div>
     </div>
     <div id="map" class="m-2 d-flex w-100 flex-column align-items-center justify-content-center rounded-3"></div>
-
-    {% endblock %}
 </div>
+{% endblock %}
