@@ -117,8 +117,7 @@ async function processPlaces(places) {
 
         // set clone's fields to the place's data
         const clone = template.content.cloneNode(true);
-        clone.getElementById("restaurant-root").href = "/details/" + place.id;
-        clone.getElementById("restaurant-root").id = place.id;
+        clone.getElementById("restaurant-root").href = `/details/${place.id}`;
         clone.getElementById("restaurant-name").textContent = `${index + 1} - ${place.displayName}`;
         clone.getElementById("restaurant-rating").textContent = `${place.rating}/5`;
         clone.getElementById("restaurant-cuisine").textContent = place.editorialSummary || place.primaryTypeDisplayName;
