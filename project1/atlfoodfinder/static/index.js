@@ -10,6 +10,7 @@ const FIELDS = [
 ];
 
 let map;
+let favorites;
 
 async function initMap() {
     const { Place, SearchNearbyRankPreference } = await google.maps.importLibrary("places");
@@ -54,7 +55,7 @@ async function findPlaces(payload) {
 
     // clear restaurant list except for the template
     const restaurantList = document.getElementById("restaurant-list");
-    while (restaurantList.children.length > 1) {
+    while (restaurantList.children.length > 0) {
         restaurantList.removeChild(restaurantList.lastChild);
     }
 
@@ -118,6 +119,7 @@ async function processPlaces(places) {
         // set clone's fields to the place's data
         const clone = template.content.cloneNode(true);
         clone.getElementById("restaurant-root").href = `/details/${place.id}`;
+        clone.getElementById("restaurant-root").id = `${place.id}`;
         clone.getElementById("restaurant-name").textContent = `${index + 1} - ${place.displayName}`;
         clone.getElementById("restaurant-rating").textContent = `${place.rating}/5`;
         clone.getElementById("restaurant-cuisine").textContent = place.editorialSummary || place.primaryTypeDisplayName;
@@ -134,11 +136,6 @@ async function processPlaces(places) {
         } else {
             clone.getElementById("restaurant-hours").textContent = "Hours unknown";
         }
-
-        // add event listeners to markers to highlight the corresponding list entry
-        // clone.addEventListener("mouseover", () => {
-        //     highlightPlace(place.id, index);
-        // });
 
         clone.firstElementChild.addEventListener("mouseenter", () => {
             markers.forEach((marker) => unHighlightPlace(marker));
@@ -196,6 +193,10 @@ async function unHighlightPlace(marker) {
         glyphColor: "white",
         scale: 1,
     }).element;
+}
+
+async function loadFavorites() {
+    console.log(favorites);
 }
 
 // starting stuff

@@ -14,9 +14,14 @@
         {% block scripts %} 
 
         {% endblock %}
+
+        <!-- prettier-ignore -->
+        {% block style %}
+
+        {% endblock %}
     </head>
     <body data-bs-theme="dark">
-        <div class="position-relative" style="max-width: 100%; max-height: calc(100%-15px)">
+        <div class="position-relative" style="max-width: 100vw; max-height: calc(100vh-15px)">
             {% block content %} {% endblock %}
         </div>
     </body>
