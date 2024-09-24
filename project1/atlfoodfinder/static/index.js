@@ -39,7 +39,7 @@ async function initMap() {
     const { places } = await Place.searchNearby(request);
 
     if (places.length) {
-        processPlaces(places);
+        processPlaces(places, "restaurant-search-list");
     }
 }
 
@@ -49,15 +49,6 @@ async function findPlaces(payload) {
     const { Place, SearchNearbyRankPreference } = await google.maps.importLibrary("places");
 
     const currentCenter = map.getCenter();
-
-    // remove all old markers
-    markers.forEach((marker) => marker.setMap(null));
-
-    // clear restaurant list except for the template
-    const restaurantList = document.getElementById("restaurant-list");
-    while (restaurantList.children.length > 0) {
-        restaurantList.removeChild(restaurantList.lastChild);
-    }
 
     // build the request:
     //  - only get certain fields
@@ -82,36 +73,93 @@ async function findPlaces(payload) {
     const { places } = await Place.searchByText(request);
 
     if (places.length) {
-        processPlaces(places);
+        processPlaces(places, "restaurant-search-list");
     } else {
         console.log("No results");
     }
 }
 
-async function processPlaces(places) {
+function buildMarker(index, place) {
+    const content = document.createElement("div");
+
+    content.classList.add("property");
+    content.innerHTML = `
+        <a class="icon z-0" href="/details/${place.id}">
+            <div class="badge fs-6 text-bg-primary rounded-pill" id="details-icon-${place.id}">
+                <span class="">${index + 1}</span>
+            </div>
+        </a>
+        <div id="details-${
+            place.id
+        }" class="position-absolute invisible z-3" style="left: 50%; bottom: 40px; transform: translateX(-50%)">
+            <div class="card z-3" style="max-width: 300px; width: 300px">
+                <h5 class="card-header">
+                    ${place.displayName}
+                </h5>
+                <div class="card-body">
+                    <p class="card-text fs-6">${place.editorialSummary || place.primaryTypeDisplayName}</p>
+                </div>
+                <div class="card-footer">
+                    <small class="text-body-secondary">Click for more info</small>
+                </div>
+
+            </div>
+        </div>
+          `;
+    return content;
+}
+
+async function processPlaces(places, parentDivId) {
     const { AdvancedMarkerElement, PinElement } = await google.maps.importLibrary("marker");
     const { LatLngBounds } = await google.maps.importLibrary("core");
     const bounds = new LatLngBounds();
+
+    // clear the map/list
+    // remove all old markers
+    markers.forEach((marker) => marker.setMap(null));
+
+    // clear restaurant list except for the template
+    const restaurantList = document.getElementById(parentDivId);
+    while (restaurantList.children.length > 0) {
+        restaurantList.removeChild(restaurantList.lastChild);
+    }
 
     // for each place, create a marker and a list entry
     places.forEach((place, index) => {
         place = place.toJSON();
 
         // add marker with corresponding number
-        const pin = new PinElement({
-            glyph: `${index + 1}`,
-            glyphColor: "white",
-        });
+        // const pin = new PinElement({
+        //     glyph: `${index + 1}`,
+        //     glyphColor: "white",
+        // });
+
+        const markerDiv = buildMarker(index, place);
+        // find the div in the marker with id "details-icon-${place.id}"
+        const markerIcon = markerDiv.querySelector(`#details-icon-${place.id}`);
+        const markerDetails = markerDiv.querySelector(`#details-${place.id}`);
+
         const marker = new AdvancedMarkerElement({
-            map,
+            map: map,
             position: place.location,
             title: `${place.id}:${index}`,
-            content: pin.element,
+            content: markerDiv,
+        });
+
+        markerIcon?.addEventListener("mouseenter", () => {
+            console.log("yea");
+            markerDetails.classList.remove("invisible");
+            markerDetails.classList.add("visible");
+        });
+        markerIcon?.addEventListener("mouseleave", () => {
+            console.log("yea");
+            markerDetails.classList.remove("visible");
+            markerDetails.classList.add("invisible");
         });
         markers.push(marker);
 
         // add restaurant entry to restaurant list
-        const restaurantList = document.getElementById("restaurant-list");
+        const restaurantList = document.getElementById(parentDivId);
 
         // duplicate the template and set the fields
         const template = document.getElementById("restaurant-template");
@@ -142,11 +190,11 @@ async function processPlaces(places) {
             highlightPlace(marker, false);
         });
 
-        marker.addEventListener("mouseenter", () => {
+        markerIcon?.addEventListener("mouseenter", () => {
             markers.forEach((marker) => unHighlightPlace(marker));
             highlightPlace(marker, true);
         });
-        marker.addEventListener("mouseleave", () => {
+        markerIcon?.addEventListener("mouseleave", () => {
             markers.forEach((marker) => unHighlightPlace(marker));
         });
 
@@ -168,11 +216,11 @@ async function highlightPlace(marker, autoScroll) {
     const index = parseInt(marker.title.split(":")[1]);
     restaurant.classList.add("active");
 
-    marker.content = new PinElement({
-        glyph: `${index + 1}`,
-        glyphColor: "white",
-        scale: 1.5,
-    }).element;
+    // marker.content = new PinElement({
+    //     glyph: `${index + 1}`,
+    //     glyphColor: "white",
+    //     scale: 1.5,
+    // }).element;
 
     // also scroll to the restaurant in the list
     if (autoScroll) restaurant.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -188,15 +236,32 @@ async function unHighlightPlace(marker) {
     } catch (e) {}
 
     // also unhighlight the marker
-    marker.content = new PinElement({
-        glyph: `${index + 1}`,
-        glyphColor: "white",
-        scale: 1,
-    }).element;
+    // marker.content = new PinElement({
+    //     glyph: `${index + 1}`,
+    //     glyphColor: "white",
+    //     scale: 1,
+    // }).element;
 }
 
 async function loadFavorites() {
+    const { Place } = await google.maps.importLibrary("places");
+    let placeDetails = [];
     console.log(favorites);
+
+    for (const placeId of favorites) {
+        console.log(placeId);
+        const place = new Place({
+            id: placeId,
+        });
+
+        await place.fetchFields({
+            fields: FIELDS,
+        });
+
+        placeDetails.push(place);
+    }
+
+    processPlaces(placeDetails, "restaurant-favorites-list");
 }
 
 // starting stuff

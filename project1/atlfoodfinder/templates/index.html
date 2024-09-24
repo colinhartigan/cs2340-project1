@@ -13,25 +13,21 @@ a creative title
 <script>
     console.log("index.js loaded");
     favorites = "{{ favorites | escapejs }}";
+    // json decode favorites
+    favorites = JSON.parse(favorites);
 </script>
-{% endblock %} {% block style %}
-<style>
-    .tab-pane:not(.active) {
-        display: none;
-    }
-</style>
-{% endblock %}
+{% endblock %} {% block style %} {% endblock %}
 
 <!--prettier-ignore-->
 {% block content %}
 
 <div
     class="min-vw-100 h-100 d-flex flex-row bg-white align-items-stretch justify-content-start"
-    style="max-height: 100%"
+    style="max-height: 100vh"
 >
     <div
-        class="d-flex flex-column w-100 h-100 gap-3 align-items-start justify-content-start bg-dark-subtle p-3 m-2 rounded-3 overflow-hidden"
-        style="max-width: 500px; max-height: 100%"
+        class="d-flex flex-column w-100 h-auto gap-3 align-items-start justify-content-start bg-dark-subtle m-2 p-3 rounded-3 overflow-hidden"
+        style="max-width: 500px"
     >
         <div class="d-flex flex-row w-100 align-items-center justify-content-between">
             <p class="text-center m-0 h3">ATL Food Finder</p>
@@ -49,7 +45,13 @@ a creative title
 
         <ul class="nav nav-underline" data-tabs="tabs" id="nav-tabs">
             <li class="nav-item">
-                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#search-tab" type="button">
+                <button
+                    class="nav-link active"
+                    data-bs-toggle="tab"
+                    data-bs-target="#search-tab"
+                    type="button"
+                    onclick="initSearch()"
+                >
                     Search
                 </button>
             </li>
@@ -125,7 +127,10 @@ a creative title
                         </div>
                     </div>
 
-                    <div id="restaurant-list" class="w-100 flex-grow-1 h-auto list-group h-auto overflow-auto"></div>
+                    <div
+                        id="restaurant-search-list"
+                        class="w-100 flex-grow-1 h-auto list-group h-auto overflow-auto"
+                    ></div>
                 </div>
             </div>
 
@@ -133,7 +138,7 @@ a creative title
             <div class="tab-pane" tabindex="0" id="favorites-tab" role="tabpanel">
                 <div class="w-100 h-100">
                     <div
-                        id="restaurant-list"
+                        id="restaurant-favorites-list"
                         class="w-100 list-group h-100 overflow-auto"
                         style="max-height: 100%"
                     ></div>

@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import redirect, render
 
 from .models import Favorite
+import json
 
 # Create your views here.
 
@@ -13,7 +14,9 @@ def index(request):
         return render(
             request,
             "index.html",
-            {"user": request.user, "favorites": get_favorite_set(request.user)},
+            {
+                "user": request.user, "favorites": json.dumps(get_favorite_set(request.user))
+            },
         )
     else:
         return redirect(f"{settings.LOGIN_URL}?next={request.path}")
