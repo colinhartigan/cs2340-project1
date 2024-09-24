@@ -22,24 +22,37 @@ async function initMap() {
         mapId: "d2f899a8ee72c782",
     });
 
-    const request = {
-        // required parameters
-        fields: FIELDS,
-        locationRestriction: {
-            center: CENTER_GT,
-            radius: 1000,
-        },
-        // optional parameters
-        includedPrimaryTypes: ["restaurant"],
-        rankPreference: SearchNearbyRankPreference.DISTANCE, // or POPULARITY
-        language: "en-US",
-        region: "us",
-    };
-    //@ts-ignore
-    const { places } = await Place.searchNearby(request);
+    let realPlaces;
 
-    if (places.length) {
-        processPlaces(places, "restaurant-search-list");
+    if (!localStorage.getItem("places")) {
+        const request = {
+            // required parameters
+            fields: FIELDS,
+            locationRestriction: {
+                center: CENTER_GT,
+                radius: 1000,
+            },
+            // optional parameters
+            includedPrimaryTypes: ["restaurant"],
+            rankPreference: SearchNearbyRankPreference.DISTANCE, // or POPULARITY
+            language: "en-US",
+            region: "us",
+        };
+        //@ts-ignore
+        const { places } = await Place.searchNearby(request);
+        realPlaces = places;
+
+        console.log(realPlaces);
+    } else {
+        realPlaces = JSON.parse(localStorage.getItem("places"));
+    }
+
+    console.log(realPlaces);
+
+    if (realPlaces.length) {
+        localStorage.setItem("places", JSON.stringify(realPlaces));
+
+        processPlaces(realPlaces, "restaurant-search-list");
     }
 }
 
@@ -73,6 +86,7 @@ async function findPlaces(payload) {
     const { places } = await Place.searchByText(request);
 
     if (places.length) {
+        localStorage.setItem("places", JSON.stringify(places));
         processPlaces(places, "restaurant-search-list");
     } else {
         console.log("No results");
@@ -82,17 +96,17 @@ async function findPlaces(payload) {
 function buildMarker(index, place) {
     const content = document.createElement("div");
 
-    content.classList.add("property");
+    content.style.zIndex = 0;
     content.innerHTML = `
-        <a class="icon z-0" href="/details/${place.id}">
+        <a class="icon" href="/details/${place.id}">
             <div class="badge fs-6 text-bg-primary rounded-pill" id="details-icon-${place.id}">
                 <span class="">${index + 1}</span>
             </div>
         </a>
         <div id="details-${
             place.id
-        }" class="position-absolute invisible z-3" style="left: 50%; bottom: 40px; transform: translateX(-50%)">
-            <div class="card z-3" style="max-width: 300px; width: 300px">
+        }" class="position-absolute invisible" style="left: 50%; bottom: 40px; transform: translateX(-50%)">
+            <div class="card" style="max-width: 300px; width: 300px">
                 <h5 class="card-header">
                     ${place.displayName}
                 </h5>
@@ -126,7 +140,9 @@ async function processPlaces(places, parentDivId) {
 
     // for each place, create a marker and a list entry
     places.forEach((place, index) => {
-        place = place.toJSON();
+        try {
+            place = place.toJSON();
+        } catch (e) {}
 
         // add marker with corresponding number
         // const pin = new PinElement({
@@ -150,11 +166,13 @@ async function processPlaces(places, parentDivId) {
             console.log("yea");
             markerDetails.classList.remove("invisible");
             markerDetails.classList.add("visible");
+            hideOtherMarkers(marker);
         });
         markerIcon?.addEventListener("mouseleave", () => {
             console.log("yea");
             markerDetails.classList.remove("visible");
             markerDetails.classList.add("invisible");
+            showOtherMarkers();
         });
         markers.push(marker);
 
@@ -189,6 +207,10 @@ async function processPlaces(places, parentDivId) {
             markers.forEach((marker) => unHighlightPlace(marker));
             highlightPlace(marker, false);
         });
+        clone.firstElementChild.addEventListener("mouseleave", () => {
+            markers.forEach((marker) => unHighlightPlace(marker));
+            unHighlightPlace(marker);
+        });
 
         markerIcon?.addEventListener("mouseenter", () => {
             markers.forEach((marker) => unHighlightPlace(marker));
@@ -216,14 +238,24 @@ async function highlightPlace(marker, autoScroll) {
     const index = parseInt(marker.title.split(":")[1]);
     restaurant.classList.add("active");
 
-    // marker.content = new PinElement({
-    //     glyph: `${index + 1}`,
-    //     glyphColor: "white",
-    //     scale: 1.5,
-    // }).element;
+    hideOtherMarkers(marker);
 
     // also scroll to the restaurant in the list
     if (autoScroll) restaurant.scrollIntoView({ behavior: "smooth", block: "center" });
+}
+
+async function hideOtherMarkers(marker) {
+    markers.forEach((m) => {
+        if (m !== marker) {
+            m.setMap(null);
+        }
+    });
+}
+
+async function showOtherMarkers() {
+    markers.forEach((m) => {
+        m.setMap(map);
+    });
 }
 
 async function unHighlightPlace(marker) {
@@ -235,12 +267,7 @@ async function unHighlightPlace(marker) {
         restaurant.classList.remove("active");
     } catch (e) {}
 
-    // also unhighlight the marker
-    // marker.content = new PinElement({
-    //     glyph: `${index + 1}`,
-    //     glyphColor: "white",
-    //     scale: 1,
-    // }).element;
+    showOtherMarkers();
 }
 
 async function loadFavorites() {
@@ -273,7 +300,12 @@ function initSearch() {
     let query = document.getElementById("search-input").value;
 
     if (query == "") {
-        query = "food";
+        if (localStorage.getItem("places")) {
+            processPlaces(JSON.parse(localStorage.getItem("places")), "restaurant-search-list");
+            return;
+        } else {
+            query = "food";
+        }
     }
     if (dist == 0) {
         dist = 1;
