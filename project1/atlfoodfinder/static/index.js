@@ -129,8 +129,9 @@ async function processPlaces(places, parentDivId) {
     const bounds = new LatLngBounds();
 
     // clear the map/list
-    // remove all old markers
+    // delete all markers
     markers.forEach((marker) => marker.setMap(null));
+    markers = [];
 
     // clear restaurant list except for the template
     const restaurantList = document.getElementById(parentDivId);
