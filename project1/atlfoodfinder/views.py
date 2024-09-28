@@ -6,6 +6,10 @@ from django.shortcuts import redirect, render
 from .models import Favorite
 import json
 
+from .models import Review
+
+from django.contrib import messages 
+
 # Create your views here.
 
 
@@ -155,3 +159,41 @@ def get_favorite_set(user):
 
 def delete_favorite(user, placeid):
     user.favorite_set.filter(placeid=placeid).delete()
+
+def submit_review(request, placeid):
+    if request.method == "POST" and request.user.is_authenticated:
+        rating = int(request.POST.get("rating"))
+        comment = request.POST.get("comment")
+
+        # Save the review
+        review = Review.objects.create(
+            user=request.user,
+            placeid=placeid,
+            rating=rating,
+            comment=comment
+        )
+        review.save()
+        
+        return redirect(f"/details/{placeid}")
+
+    return redirect(f"{settings.LOGIN_URL}?next={request.path}")
+
+def rdetails(request, placeid):
+    if request.user.is_authenticated:
+        is_favorite = request.user.favorite_set.filter(placeid=placeid).exists()
+        reviews = Review.objects.filter(placeid=placeid)
+
+        if request.method == "POST":
+            if is_favorite:
+                delete_favorite(request.user, placeid)
+            else:
+                add_favorite(request.user, placeid)
+            is_favorite = not is_favorite
+
+        return render(
+            request, 
+            "detail.html", 
+            {"placeid": placeid, "favorite": is_favorite, "reviews": reviews}
+        )
+    else:
+        return redirect(f"{settings.LOGIN_URL}?next={request.path}")
