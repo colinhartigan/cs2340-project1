@@ -89,9 +89,12 @@ def rdetails(request, placeid):
             else:
                 is_favorite = True
                 add_favorite(request.user, placeid)
+        
+        # Fetch all reviews for the placeid
+        reviews = Review.objects.filter(placeid=placeid).order_by('-created_at')
 
         return render(
-            request, "detail.html", {"placeid": placeid, "favorite": is_favorite}
+            request, "detail.html", {"placeid": placeid, "favorite": is_favorite, "reviews": reviews}
         )
     else:
         return redirect(f"{settings.LOGIN_URL}?next={request.path}")
@@ -178,22 +181,3 @@ def submit_review(request, placeid):
 
     return redirect(f"{settings.LOGIN_URL}?next={request.path}")
 
-def rdetails(request, placeid):
-    if request.user.is_authenticated:
-        is_favorite = request.user.favorite_set.filter(placeid=placeid).exists()
-        reviews = Review.objects.filter(placeid=placeid)
-
-        if request.method == "POST":
-            if is_favorite:
-                delete_favorite(request.user, placeid)
-            else:
-                add_favorite(request.user, placeid)
-            is_favorite = not is_favorite
-
-        return render(
-            request, 
-            "detail.html", 
-            {"placeid": placeid, "favorite": is_favorite, "reviews": reviews}
-        )
-    else:
-        return redirect(f"{settings.LOGIN_URL}?next={request.path}")
