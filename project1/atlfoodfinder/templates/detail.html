@@ -33,6 +33,50 @@ Restaurant Details
         </a>
     </button>
 </div>
+
+{% if user.is_authenticated %}
+<div class="container mt-4">
+    <h2>Write a Review</h2>
+    <form action="{% url 'submit_review' placeid %}" method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="rating" class="form-label">Rating (1-5):</label>
+            <select name="rating" id="rating" class="form-select" required>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="comment" class="form-label">Comment:</label>
+            <textarea name="comment" id="comment" rows="4" class="form-control" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit Review</button>
+    </form>
+</div>
+{% else %}
+<p>Please <a href="{% url 'login' %}">log in</a> to write a review.</p>
+{% endif %}
+
+<!-- Display Reviews Section -->
+<div class="container mt-4">
+    <h2>Reviews</h2>
+    <div id="reviews-section">
+        {% if reviews %}
+            {% for review in reviews %}
+                <div class="review border p-3 mb-3">
+                    <p><strong>{{ review.user.username }}</strong> rated it {{ review.rating }}/5</p>
+                    <p>{{ review.comment }}</p>
+                    <small>{{ review.created_at }}</small>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>Write a review!</p>
+        {% endif %}
+    </div>
+</div>
 {% endblock %}
 
 {% block scripts %}
