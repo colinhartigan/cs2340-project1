@@ -1,6 +1,7 @@
 // Initialize the map when the page loads
 function initMap() {
-    const placeId = getPlaceIdFromURL();  // Get the place ID dynamically from the URL (or hardcoded)
+    const placeId = getPlaceIdFromURL();  
+    console.log('Place ID:', placeId);
 
     // Create a new map instance, centered on central Atlanta by default
     const map = new google.maps.Map(document.getElementById("map"), {
@@ -14,7 +15,7 @@ function initMap() {
     service.getDetails(
         {
             placeId: placeId,  
-            fields: ["name", "formatted_address", "geometry"],  // Fetch required fields
+            fields: ["name", "formatted_address", "geometry", "reviews"],  // Fetch required fields
         },
         (place, status) => {
             if (status === google.maps.places.PlacesServiceStatus.OK) {
@@ -31,6 +32,8 @@ function initMap() {
                     position: place.geometry.location,
                     title: place.name,
                 });
+
+                displayGoogleReviews(place.reviews);
             } else {
                 console.error('Error fetching place details:', status);
             }
@@ -40,6 +43,29 @@ function initMap() {
 
 // Get the place ID from the URL
 function getPlaceIdFromURL() {
-    const params = new URLSearchParams(window.location.search);
-    return params.get('placeId') || 'ChIJN5Nz71W3j4ARhx5bwpTQEGg';  // Default Place ID if none is provided
+    const path = window.location.pathname;  // Get the current URL path
+    const segments = path.split('/');  // Split the path by '/'
+    return segments[segments.length - 2];  // Return the second-to-last segment as the placeId
 }
+
+function displayGoogleReviews(reviews) {
+    const reviewsSection = document.getElementById('reviews-section');  // Get the reviews section container
+    reviewsSection.innerHTML = '';  // Clear any existing content
+
+    if (reviews && reviews.length > 0) {
+        reviews.forEach((review) => {
+            // Create a new div for each review
+            const reviewElement = document.createElement('div');
+            reviewElement.classList.add('review', 'border', 'p-3', 'mb-3');  // Add necessary classes for styling
+            reviewElement.innerHTML = `
+                <p><strong>${review.author_name}</strong> rated it ${review.rating}/5</p>
+                <p>${review.text}</p>
+                <small>Reviewed on ${new Date(review.time * 1000).toLocaleDateString()}</small>
+            `;  // Populate the review details (author, rating, comment, date)
+            reviewsSection.appendChild(reviewElement);  // Append the review to the reviews section
+        });
+    } else {
+        reviewsSection.innerHTML = '<p>No reviews found.</p>';  // Display message if no reviews are available
+    }
+}
+
