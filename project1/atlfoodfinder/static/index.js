@@ -264,9 +264,6 @@ async function loadFavorites() {
     processPlaces(placeDetails, "restaurant-favorites-list");
 }
 
-// starting stuff
-initMap();
-
 function initSearch() {
     let dist = document.getElementById("dist-input").value;
     let rating = document.getElementById("rating-input").value;
@@ -293,6 +290,9 @@ function initSearch() {
 
 // listen for enter button on the search box then search
 window.addEventListener("DOMContentLoaded", (event) => {
+    // starting stuff
+    initMap();
+
     document.getElementById("search-input").addEventListener("keypress", (e) => {
         if (e.key === "Enter") {
             initSearch();
