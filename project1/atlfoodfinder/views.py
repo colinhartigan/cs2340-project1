@@ -2,7 +2,7 @@ from django.conf import settings
 from django.contrib.auth import authenticate, get_user_model, login, logout
 from django.contrib.auth.models import User
 from django.shortcuts import redirect, render
-
+from django.db.utils import IntegrityError
 from .models import Favorite
 import json
 
@@ -60,12 +60,21 @@ def site_login(request):
             else:
                 # makes sure that the user registering isn't a duplicate
                 user_taken = check_user_exists(username)
+                print(user_taken)
                 if not user_taken:
                     # if user is not a duplicate, create a new user, log in, and redirect to the main page
-                    newuser = User.objects.create_user(username, password)
-                    newuser.save()
+                    try:
+                        newuser = User.objects.create_user(username=username, password=password)
+                    except IntegrityError:
+                        return render(
+                            request,
+                            "auth.html",
+                            {"submitted": submitted, "user_taken": True},
+                        )
+                    # newuser.save()
 
                     user = authenticate(request, username=username, password=password)
+                    print(user)
                     if user is not None:
                         login(request, user)
                         return redirect("/atlfoodfinder")
@@ -122,7 +131,7 @@ def password_reset(request):
         new_password = request.POST.get("password-input")
 
         # Checks if the email exists in the system
-        user = User.objects.filter(email=email).first()
+        user = User.objects.filter(username=email).first()
         if user:
             # Check if the new password matches the old one
             if user.check_password(new_password):
