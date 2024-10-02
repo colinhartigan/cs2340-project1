@@ -144,6 +144,7 @@ async function processPlaces(places, parentDivId) {
             position: place.location,
             title: `${place.id}:${index}`,
             content: markerDiv,
+            gmpClickable: true,
         });
 
         markerIcon?.addEventListener("mouseenter", () => {

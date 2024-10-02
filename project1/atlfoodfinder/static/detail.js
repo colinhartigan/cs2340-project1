@@ -39,15 +39,24 @@ async function initMap() {
     // Update the HTML with restaurant details
     document.getElementById("restaurant-name").textContent = place.displayName;
     document.getElementById("restaurant-address").textContent = place.formattedAddress;
+    document.getElementById("restaurant-cuisine").textContent = place.primaryTypeDisplayName;
+    document.getElementById("restaurant-rating").textContent = `${place.rating}/5`;
 
     // Center the map on the restaurant's location
     map.setCenter(place.location);
 
     // Add a marker for the restaurant's location
-    new AdvancedMarkerElement({
+    const marker = new AdvancedMarkerElement({
         map: map,
         position: place.location,
         title: place.displayName,
+        // add a link to the place's Google Maps page
+        gmpClickable: true,
+    });
+
+    marker.addListener("click", ({ domEvent, latLng }) => {
+        //    link to the place's Google Maps page
+        window.open(`https://www.google.com/maps/search/?api=1&query=${latLng.lat()},${latLng.lng()}`);
     });
 
     displayGoogleReviews(place.reviews);
